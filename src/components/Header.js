@@ -1,40 +1,83 @@
 import React from 'react'
 import { Link } from 'gatsby'
-const Header = () => {
+import { useState } from 'react'
+
+import { Button, ButtonLink, ArrowDown } from './Atoms'
+import { useClickOutsideListener } from '../hooks'
+import { useRef } from 'react'
+
+const ButtonDropdown = ({ label, dropdowns }) => {
+  const node = useRef()
+  const [isOpen, setIsOpen] = useState(false)
+
+  useClickOutsideListener(node, {
+    outsideClick: () => setIsOpen(false)
+  })
+
   return (
-    <div className="flex flex-wrap">
-      <div className="w-full">
-        <nav className="relative flex flex-wrap items-center justify-between px-2 py-3 navbar-expand-lg border-b border-gray-200 ">
-          <div className="container px-4 mx-auto flex flex-wrap items-center justify-between">
-            <div className="w-full relative flex justify-between lg:w-auto lg:static lg:block lg:justify-start">
-              <Link to="/" className="text-lg font-bold leading-relaxed inline-block mr-4 py-2 whitespace-no-wrap uppercase">
-                Miman Store
-              </Link>
-
-              <button className="cursor-pointer text-xl leading-none px-3 py-1 border border-solid border-transparent rounded bg-transparent block lg:hidden outline-none focus:outline-none" type="button">
-                <span className="block relative w-6 h-px rounded-sm bg-white"></span>
-                <span className="block relative w-6 h-px rounded-sm bg-white mt-1"></span>
-                <span className="block relative w-6 h-px rounded-sm bg-white mt-1"></span>
-              </button>
-            </div>
-            <div className="flex lg:flex-grow items-center" id="example-navbar-info">
-              <ul className="flex flex-col lg:flex-row list-none ml-auto">
-                <li className="nav-item">
-                  <button className="mx-2 text-gray-600 border rounded-md p-2 hover:bg-gray-200 focus:outline-none flex flex-row">
-                    (0)
-                    <svg className="h-5 w-5" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
-                      <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                  </button>
-
-
-                </li>
-              </ul>
-            </div>
-          </div>
-        </nav>
+    <div className="relative z-10" ref={node} >
+      <Button onClick={() => setIsOpen(!isOpen)}>
+        {label}
+        <ArrowDown isOpen={isOpen} />
+      </Button>
+      {isOpen && <div className="md:absolute md:top-20 right-0 md:mt-2 md:py-2 w-48 bg-white rounded-lg md:shadow-xl">
+        {dropdowns.map(({ path, label }) => <ButtonLink key={path} to={path}> {label} </ButtonLink>)}
       </div>
+      }
     </div>
   )
 }
+
+const Header = () => {
+
+  return (
+    <nav className="bg-white shadow">
+      <div className="container mx-auto px-6 py-3 md:flex md:justify-between md:items-center">
+        <div className="flex justify-between items-center">
+          <div>
+            <Link to="/" className="text-gray-800 text-xl font-bold md:text-2xl hover:text-gray-700"> Mimanstore</Link>
+          </div>
+
+          <div className="flex md:hidden">
+            <button type="button" className="text-gray-500 hover:text-gray-600 focus:outline-none focus:text-gray-600" aria-label="toggle menu">
+              <svg viewBox="0 0 24 24" className="h-6 w-6 fill-current">
+                <path fillRule="evenodd" d="M4 5h16a1 1 0 0 1 0 2H4a1 1 0 1 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2z"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div className="md:flex items-center">
+          <div className="flex flex-col md:flex-row md:mx-6">
+            <ButtonDropdown
+              label="Piyama"
+              dropdowns={[
+                { label: "Piyama pendek", path: "/piyama-pendek" },
+                { label: "Piyama panjang", path: "/piyama-panjang" },
+              ]}
+            />
+
+            <ButtonDropdown
+              label="Daily Wear"
+              dropdowns={[
+                { label: "Piyama pendek", path: "/piyama-pendek" },
+                { label: "Piyama panjang", path: "/piyama-panjang" },
+              ]}
+            />
+            <div className="relative z-10">
+              <Button>Summer</Button>
+
+            </div>
+
+
+          </div >
+        </div >
+      </div >
+    </nav >
+  )
+}
+
+
+
 
 export default Header
